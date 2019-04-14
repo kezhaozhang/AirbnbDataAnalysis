@@ -1,0 +1,185 @@
+<html>
+ <head>
+  <title>Airbnb in Seattle</title>
+ </head>
+
+ <body>
+<h1> <p style="text-align:center;">Airbnb in Seattle: What Can Be Learned From Data</p></h1>
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+  <img src="seattle.jpg", alt="Seattle Cityscape", width=70%, class="center">
+<h2> Introduction</h2>
+<p>
+Airbnb is a popular way to generate income by renting out properties. Since the market is dynamic and competitive, potential and existing Airbnb hosts likely are interested in market insights which can help them to achieve better results for their listings.
+</p>
+<p>
+This article summarizes the  analysis of the Airbnb data in Seattle. The goal is to identify the key factors that affect three metrics of the Airbnb listings: listing availability, guest rating and  listing price.  Hopefully the findings  can be used as guidance for the Airbnb hosts in Seattle to improve their business.
+</p>
+<p>
+ The data set is obtained from Kaggle. It contains listings and the associated parameters, listing availability in a 365-day time span and guest reviews of the listings. <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html">Gradient boosting machine</a> has been used to generate regression models for guest rating and listing price. Feature importance is calculated using <a href="https://christophm.github.io/interpretable-ml-book/feature-importance.html">permutation importance</a> and feature's marginal effect on the predicted variables (guest rating and listing price) is obtained using <a href="https://christophm.github.io/interpretable-ml-book/pdp.html">partial dependence plot</a>.
+</p>
+
+<h2> Listing Availability</h2>
+<p>
+For a given  period, an Airbnb listing availability is defined as the portion of days the listing is available for rent during the time period.
+</p>
+
+<p>
+The questions we may have are: what is the overall availability?  How does the availability  change over time during the year? Does availability depend on neighborhood?
+</p>
+
+
+<p>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+}
+
+/* Create three equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 5px;
+}
+</style>
+
+<div class="row">
+
+<div class="column">
+  <figure>
+  <img src="availability_histogram.png" alt="Availability distribution", width=90%>
+  <figcaption, class="center">Fig. 1 Annual average availability distribution. </figcaption>
+</figure>
+</div>
+
+
+  <div class="column">
+    <figure>
+      <img src="availability_vs_neighbor.png" alt="Availability vs. neighborhood", width=100%>
+      <figcaption>Fig. 2 Availability of various neighborhoods.  </figcaption>
+    </figure>
+  </div>
+
+</div>
+
+<p>
+The distribution of the annual average availability (Fig. 1) shows that most of the listings are either highly available (availability close to 1) or highly unavailable (availability close to 0); and there are very few listings in between. The high availability indicates the competitiveness of the Airbnb market. But the very low availability may suggest  opportunities in some submarkets.
+</p>
+
+<p>
+Indeed, the availability varies significantly among neighborhoods in Seattle (Fig. 2).  Cascade, and Queen Anne are the neighborhoods with the lowest availability. Potential Airbnb hosts with properties in these neighborhoods may have advantage because the low supply of lodging.
+</p>
+
+<figure>
+<img src="availability_vs_month.png" alt="Availability vs. month", width=65%>
+<figcaption>Fig. 3 Availability vs. month.     </figcaption>
+</figure>
+
+<p>
+Availability also varies over time during the year.
+Availability is the lowest in January, and second lowest in July; it is highest in December (Fig. 3). While causes for availability's seasonal trend are unclear in the data, we can speculate that the low availability in July is probably due to increase in travel during summer.  The highest availability in December probably is a result of fewer people staying away from home during the holiday season.  Either a strong lodging demand or fewer hosts making their properties available  after the New Year may explain the low availability in January.
+</p>
+
+<p>
+The availability result suggests that it would be a beneficial for Airbnb hosts to adjust their listings according to season and neighborhood. In the subsequent sections we will show what factors lead to high guest ratings and  higher listing price.
+</p>
+
+
+
+<h2> Guest Ratings</h2>
+<p>
+High ratings by past guests are likely to attract future guests. Then the question is:  what are the key factors that are associated with high guest ratings?
+</p>
+<p>
+The Kaggle Airbnb data in Seattle show that the top predictors for guest rating are the guests' opinions on value, cleanliness, check-in and communication. This agrees with common sense.
+</p>
+<p>
+However, the machine learning model of the data reveals more interesting and somewhat counterintuitive findings. For example, a good value, the top predictor of guest rating, does not necessarily mean low price. In fact, higher listing price is associated with higher guest rating (Fig. 3). Therefore, to the guests the value of a listing is a combination of price and some other factors. What are these other factors then?
+</p>
+<figure>
+<img src="rating_vs_price-pdp.png" alt="Price", width=50%>
+    <figcaption, class="center">Fig. 4 Partial dependence plot shows the marginal effect of listing price (horizontal axis) on the guest rating (vertical axis). Higher price is associated with higher guest ratings. </figcaption>
+</figure>
+<p>
+The machine learning model has identified the following top features that affect the guests' ratings:
+
+<ul>
+<li><b> Property</b></li>
+  <ul>
+    <li>Properties with two or more bathrooms tend to have good guest ratings.</li>
+    <li>Properties that accommodate two or more guests tend to have good ratings.
+    <li>Properties with three or more bedrooms tend to have poorer ratings.  There is no obvious explanation for this. Perhaps a large property is harder to be kept in immaculate conditions. It would be interesting to find this out using additional data analysis.
+   </ul>
+<li><b> Host</b></li>
+Hosts with the following characteristics have higher guest ratings:
+  <ul>
+    <li>Being a superhost.</li>
+    <li> Verifiable identity. This suggests that guests value sense of security and need to establish trust when renting from strangers.</li>
+  </ul>
+
+<li><b> Neighborhood</b></li>
+  <ul>
+    <li>Listings in Central Area tend to generate good guest ratings. </li>
+    <li> Listings in University District tends to generate poor guest ratings. </li>
+  </ul>
+  <li><b> Amenities</b></li>
+Listings with the following amenities tend to generate good guest ratings:
+    <ul>
+      <li> Shampoo</li>
+      <li> Pets live on property</li>
+      <li> Suitable for events</li>
+      <li> Dryer</li>
+      <li> Safety card</li>
+    </ul>
+</ul>
+</p>
+<p>
+Airbnb hosts can focus on the above items to make the listings more attractive to potential guests. But to gain more income from the listings, we need to investigate the factors that affect the listing price.
+</p>
+
+<h2> Price</h2>
+Both the Airbnb hosts and guests are interested in the list price: the former want it to be high to generate profit whereas the latter want it to be low to stretch their money. It is therefore important to find out the top factors affecting the listing price in the Seattle market.
+<p>
+
+First, the data show a clear seasonal trend of listing price (Fig. 5). There is a strong peak in July, likely due to high demand for lodging during the summer.
+<p>
+<figure>
+<img src="price_vs_month.png", height=45%>
+<figcaption>Fig. 5 Seasonal change in listing price.</figcaption>
+</figure>
+</p>
+
+<p>
+In addition, the data model identifies these characteristics of the properties that lead to higher listing price:  more bedrooms, renting of entire home or apartment, accommodation to more guests, and higher cleaning fees.
+</p>
+
+<p>
+Among the neighborhoods in Seattle, prices are higher in Cascade, Queen Anne, Capitol Hill and Downtown.  As mentioned in previous section, Cascade and Queen Anne also have the lowest availability. They appear to be the "hottest" neighborhoods for Airbnb in Seattle. On the other end of the spectrum, listings in Rainier Valley and Delridge tend to have lower prices.
+</p>
+<p>
+Some of the amenities can help increase the listing prices. The top amenities that most strongly affect listing price are doorman, shampoo, elevator in building, air conditioning, and buzzer/wireless intercom.
+Airbnb hosts can focus on these amenities in their properties to increase the listing prices.
+</p>
+
+<h2><b>What Else Can Be Learned </b></h2>
+<p>
+The analysis of Airbnb data of Settle has provided insights into the key factors that affect listing availability, listing prices and guest ratings.  The analysis can be improved in two areas so that additional insights can be learned from data:
+<ol>
+  <li> <b>Using data of multiple cities</b>. Data used in this analysis is limited to Seattle only. With data of multiple cities, the features common among all cities and unique to each city can be  identified. This can provide Airbnb hosts with general guidance for all cities as well as localized guidance for individual cities. </li>
+  <li><b>Using NLP to analyze guest comments</b>. The Airbnb date contain guest reviews, which may contain information not captured by the structured parameters in the data set.
+  </li>
+</ol>
+</p>
+<p></p>
+
+ </body>
+</html>
